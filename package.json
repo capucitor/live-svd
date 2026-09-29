@@ -1,0 +1,149 @@
+{
+  "name": "live-svd",
+  "displayName": "Live SVD",
+  "description": "Live STM32 SVD register viewer using OpenOCD",
+  "version": "1.0.1",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Debuggers"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onView:liveSvd.watch",
+    "onCommand:liveSvd.addRegister",
+    "onCommand:liveSvd.removeRegister",
+    "onCommand:liveSvd.reload",
+    "onCommand:liveSvd.toggleRegister",
+    "onCommand:liveSvd.writeRegister",
+    "onCommand:liveSvd.writeField"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "debug": [
+        {
+          "id": "liveSvd.watch",
+          "name": "LIVE SVD"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "liveSvd.addRegister",
+        "title": "Live SVD: Add Register",
+        "icon": "$(add)"
+      },
+      {
+        "command": "liveSvd.removeRegister",
+        "title": "Live SVD: Remove Register",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "liveSvd.reload",
+        "title": "Live SVD: Reload SVD",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "liveSvd.toggleRegister",
+        "title": "Live SVD: Toggle Live Register"
+      },
+      {
+        "command": "liveSvd.writeRegister",
+        "title": "Live SVD: Write Register Value",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "liveSvd.writeField",
+        "title": "Live SVD: Write Field Value",
+        "icon": "$(edit)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "liveSvd.addRegister",
+          "when": "view == liveSvd.watch",
+          "group": "navigation@1"
+        },
+        {
+          "command": "liveSvd.reload",
+          "when": "view == liveSvd.watch",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "liveSvd.writeRegister",
+          "when": "view == liveSvd.watch && viewItem == svdRegisterWritable",
+          "group": "inline@1"
+        },
+        {
+          "command": "liveSvd.writeRegister",
+          "when": "view == liveSvd.watch && viewItem == svdRegisterLiveWritable",
+          "group": "inline@1"
+        },
+        {
+          "command": "liveSvd.writeField",
+          "when": "view == liveSvd.watch && viewItem == svdFieldWritable",
+          "group": "inline@1"
+        },
+        {
+          "command": "liveSvd.removeRegister",
+          "when": "view == liveSvd.watch && viewItem == svdRegisterLiveWritable",
+          "group": "inline@2"
+        },
+        {
+          "command": "liveSvd.removeRegister",
+          "when": "view == liveSvd.watch && viewItem == svdRegisterLiveReadonly",
+          "group": "inline@2"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "liveSvd.watch",
+        "contents": "Start Cortex-Debug to load the SVD for the selected project.\n[Reload SVD](command:liveSvd.reload)"
+      }
+    ],
+    "configuration": {
+      "title": "Live SVD",
+      "properties": {
+        "liveSvd.svdFile": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "Path to CMSIS-SVD file"
+        },
+        "liveSvd.openocdHost": {
+          "type": "string",
+          "default": "127.0.0.1",
+          "scope": "resource",
+          "description": "OpenOCD Tcl server address"
+        },
+        "liveSvd.refreshMs": {
+          "type": "number",
+          "default": 250,
+          "minimum": 50,
+          "scope": "resource",
+          "description": "Register refresh period in milliseconds"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.0.0"
+  }
+}
